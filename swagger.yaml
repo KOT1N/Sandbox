@@ -1,0 +1,13 @@
+openapi: 3.0.3
+info:
+  title: My API
+  description: Description of my API
+  version: 1.0.0
+paths:
+  /basic:
+    get:
+      summary: Run basic test command
+      description: This endpoint runs the basic test command in console.
+      responses:
+        '200':
+          description: OK
