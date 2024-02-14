@@ -8,17 +8,17 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
+import Redis from 'ioredis';
 import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @Inject('MEMORY_CACHE')
-    private memoryCache: Cache,
-    @Inject('REDIS_CACHE')
-    private redisCache: Cache,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Inject('REDIS') private readonly redisClient: Redis,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -30,7 +30,29 @@ export class UserService {
   }
 
   async findOne(id: number) {
-    return await this.userRepository.findOne({ where: { id: id } });
+    const cacheKey = `user:${id}`;
+    let user: User = await this.cacheManager.get(cacheKey);
+
+    if (!user) {
+      console.log('Getting from db');
+      user = await this.userRepository.findOne({ where: { id: id } });
+      if (!user) {
+        throw new NotFoundException(`User with ID ${id} not found`);
+      }
+      await this.cacheManager.set(cacheKey, user);
+      await this.redisClient.set(cacheKey, JSON.stringify(user));
+    }
+
+    if (!user) {
+      console.log('Getting from redis');
+      const redisUser = await this.redisClient.get(cacheKey);
+      if (redisUser) {
+        user = JSON.parse(redisUser);
+      } else {
+        throw new NotFoundException(`User with ID ${id} not found in cache`);
+      }
+    }
+    return user;
   }
 
   async getCountLimitById(id: number): Promise<number> {
