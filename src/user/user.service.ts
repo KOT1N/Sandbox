@@ -20,6 +20,7 @@ export class UserService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @Inject('REDIS') private readonly redisClient: Redis,
   ) {}
+
   async create(createUserDto: CreateUserDto) {
     return await this.userRepository.save(createUserDto);
   }
