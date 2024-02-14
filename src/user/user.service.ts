@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -7,13 +8,19 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @Inject('MEMORY_CACHE')
+    private memoryCache: Cache,
+    @Inject('REDIS_CACHE')
+    private redisCache: Cache,
   ) {}
+
   async create(createUserDto: CreateUserDto) {
     return await this.userRepository.save(createUserDto);
   }
