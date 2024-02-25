@@ -11,7 +11,10 @@ export class BasicCommand extends CommandRunner {
   constructor() {
     super();
   }
-  async run(passedParams: string[], options?: Record<string, any>): Promise<void> {
+  async run(
+    passedParams: string[],
+    options?: Record<string, any>,
+  ): Promise<void> {
     console.log('WORKING!!');
   }
 }

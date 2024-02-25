@@ -1,12 +1,21 @@
-import { Controller, Get, Post, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Query,
+  UseInterceptors,
+} from '@nestjs/common';
 import { BetService } from './bet.service';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { TransactionInterceptor } from '../transaction/transaction.interceptor';
 
 @ApiTags('Bet')
 @Controller('bet')
 export class BetController {
   constructor(private readonly betService: BetService) {}
 
+  @UseInterceptors(TransactionInterceptor)
   @Post()
   @ApiOperation({ summary: 'Create a new bet' })
   @ApiResponse({
