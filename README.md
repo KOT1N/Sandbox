@@ -1,32 +1,30 @@
-## Як розпочати:
+## How to start:
 
-1. В кореневій директорії проекту виконайте наступну команду, щоб підняти контейнери за допомогою Docker та перебудувати їх, якщо потрібно:
-
+1. In the root directory of the project, execute the following command to spin up containers using Docker and rebuild them if necessary:
     ```bash
     docker-compose up -d --build
     ```
 
-2. Перейдіть до контейнера Docker, використовуючи наступну команду:
-
+2. Access the Docker container using the following command:
     ```bash
     docker exec -it explorer sh
     ```
 
-3. Запустіть міграції за допомогою наступної команди в контейнері Docker:
+3. Run migrations inside the Docker container using the following command:
 
     ```bash
     npm run migration:run
     ```
 
-## Як тестувати ставки:
+## How to test bets:
 
-1. В кореневій директорії проекту виконайте наступний скрипт, передаючи параметри `<user_id>` та `<added_count>`:
+1. In the root directory of the project, execute the following script, passing the parameters `<user_id>` та `<added_count>`:
 
     ```bash
     ./take_bet.sh <user_id> <added_count>
     ```
 
-    Наприклад:
+    For example:
 
     ```bash
     ./take_bet.sh 7 2
@@ -34,4 +32,4 @@
 
 ---
 
-Нехай вам удається насолоджуватися процесом розробки!
+Enjoy the development process!
